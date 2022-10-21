@@ -9,7 +9,7 @@ public class Main {
 
         Methods methods = new Methods();
 
-        methods.customerFileIteration(JOptionPane.showInputDialog(null, "Skriv in ett namn eller personnummer:").trim(), customerInfo);
+        methods.customerFileIteration(JOptionPane.showInputDialog(null, "Skriv in ett namn eller personnummer:"), customerInfo);
     }
 
 }

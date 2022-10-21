@@ -20,12 +20,12 @@ class MethodsTest {
     }
     @Test
     void testCompareDate() {
-        String testDate = "2021-10-20";
-        Period timeCompare = Period.between(LocalDate.parse(testDate), LocalDate.now());
+
+        Period timeCompare = Period.between(LocalDate.now().minusMonths(13), LocalDate.now());
 
         assert(timeCompare.toTotalMonths() != 5);
-        assert(timeCompare.toTotalMonths() == 12);
-        assert(timeCompare.getYears() != 10);
+        assert(timeCompare.toTotalMonths() == 13);
+        assert(timeCompare.getYears() != 3);
         assert(timeCompare.getYears() == 1);
     }
     @Test

@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 public class Methods {
     public void customerFileIteration(String input, Path readFile) {
@@ -21,7 +22,7 @@ public class Methods {
                     JOptionPane.showMessageDialog(null,"Du avslutade programmet.");
                     return;
                 }
-                else if (input.equalsIgnoreCase(firstLineArray[0].trim()) || input.equalsIgnoreCase(firstLineArray[1].trim())) {
+                else if (input.trim().equalsIgnoreCase(firstLineArray[0].trim()) || input.trim().equalsIgnoreCase(firstLineArray[1].trim())) {
                     compareDate(readFirstLine,readSecondLine);
                     return;
                 }
@@ -37,17 +38,20 @@ public class Methods {
         }
     }
     public void compareDate(String readFirstLine, String readSecondLine) {
-            try {
-                Period timeCompare = Period.between(LocalDate.parse(readSecondLine), LocalDate.now());
+        try {
+            Period timeCompare = Period.between(LocalDate.parse(readSecondLine), LocalDate.now());
             if (timeCompare.toTotalMonths() < 12 ){
                 JOptionPane.showMessageDialog(null, "Personen du angav är en aktiv medlem och " +
-                                                                        "betalade sin årsavgift för " + timeCompare.toTotalMonths() + " månader sen.");
+                        "betalade sin årsavgift för " + timeCompare.toTotalMonths() + " månader sen.");
                 writeToFile(readFirstLine);
             }
             else if (timeCompare.toTotalMonths() > 12 ) {
                 JOptionPane.showMessageDialog(null, "Personen du angav är en vilande medlem och " +
-                                                                        "betalade sin senaste årsavgift för " + timeCompare.toTotalMonths() + " månader sen.");
+                        "betalade sin senaste årsavgift för " + timeCompare.toTotalMonths() + " månader sen.");
             }
+        }
+        catch (DateTimeParseException dtpe) {
+            JOptionPane.showMessageDialog(null, "Datumets format i kund-dokumentet stämmer inte.");
         }
         catch (Exception e) {
             e.printStackTrace();
