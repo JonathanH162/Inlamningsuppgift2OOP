@@ -7,47 +7,44 @@ import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 public class Methods {
-    public void customerFileIteration(String input, Path readFile) {
-        String readFirstLine;
-        String readSecondLine;
+    public String customerFileIteration(String input, Path readFile) {
 
         try (Scanner reader = new Scanner(readFile)) {
             while (reader.hasNext()) {
-                readFirstLine = reader.nextLine();
-                readSecondLine = reader.nextLine();
-
-                String[] firstLineArray = readFirstLine.split(", ");
+                String readFirstLine = reader.nextLine();
+                String readSecondLine = reader.nextLine();
 
                 if (input == null) {
-                    JOptionPane.showMessageDialog(null,"Du avslutade programmet.");
-                    return;
+                    return "Du avslutade programmet.";
                 }
-                else if (input.trim().equalsIgnoreCase(firstLineArray[0].trim()) || input.trim().equalsIgnoreCase(firstLineArray[1].trim())) {
-                    compareDate(readFirstLine,readSecondLine);
-                    return;
+                else if (input.trim().equalsIgnoreCase(arrayMaker(readFirstLine)[0].trim()) || input.trim().equalsIgnoreCase(arrayMaker(readFirstLine)[1].trim())) {
+                    if(compareDate(readSecondLine)) {
+                        writeToFile(readFirstLine,"src/gymVisitors.txt");
+                        return "Personen du angav är en aktiv medlem, välkommen in och träna.";
+                    }
+                    else {
+                        return "Personen du angav har varit medlem men har inte betalat sin årsavgift.";
+                    }
                 }
                 else if (input.isBlank()) {
-                    JOptionPane.showMessageDialog(null,"Input-raden får ej lämnas tom.");
-                    return;
+                    return "Input-raden får ej lämnas tom.";
                 }
             }
-            JOptionPane.showMessageDialog(null, "Personen du angav är inte medlem.");
+            return "Personen du angav är inte medlem.";
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+        return "";
     }
-    public void compareDate(String readFirstLine, String readSecondLine) {
+    public boolean compareDate(String readSecondLine) {
         try {
             Period timeCompare = Period.between(LocalDate.parse(readSecondLine), LocalDate.now());
             if (timeCompare.toTotalMonths() < 12 ){
-                JOptionPane.showMessageDialog(null, "Personen du angav är en aktiv medlem och " +
-                        "betalade sin årsavgift för " + timeCompare.toTotalMonths() + " månader sen.");
-                writeToFile(readFirstLine);
+                return true;
             }
             else if (timeCompare.toTotalMonths() > 12 ) {
-                JOptionPane.showMessageDialog(null, "Personen du angav är en vilande medlem och " +
-                        "betalade sin senaste årsavgift för " + timeCompare.toTotalMonths() + " månader sen.");
+                return false;
             }
         }
         catch (DateTimeParseException dtpe) {
@@ -56,9 +53,13 @@ public class Methods {
         catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
-    public void writeToFile (String readFile) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/gymVisitors.txt", true))) {
+    public String[] arrayMaker(String readFirstLine) {
+        return readFirstLine.split(", ");
+    }
+    public void writeToFile (String readFile, String file) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
             writer.write("\n" + readFile + ", " + LocalDate.now());
         }
         catch (Exception e) {
